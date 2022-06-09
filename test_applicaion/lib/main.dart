@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_applicaion/answer.dart';
-import 'package:test_applicaion/question.dart';
+import 'package:test_applicaion/quiz.dart';
+import 'package:test_applicaion/result.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,33 +12,44 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
+  final questionText = "Question Text";
+  final answers = "answers";
+  final question = [
+    {
+      "Question Text": "what is your favourite color?",
+      "answers": ["red", "green", "blue", "yellow"]
+    },
+    {
+      "Question Text": "what is your favourite animal?",
+      "answers": ["cat", "dog", "bird", "mouse"]
+    }
+  ];
 
-  void answerQuestion() {
+  void _answerQuestion() {
     setState(() {
       _questionIndex++;
     });
-    print(_questionIndex);
+    if (_questionIndex < question.length - 1) {
+      print(_questionIndex);
+    } else {
+      print("Completed!!!");
+    }
   }
 
   @override
   Widget build(BuildContext buildContext) {
-    var questions = [
-      "what is your favourite color?",
-      "what is your favourite animal?"
-    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text("title"),
         ),
-        body: Column(
-          children: [
-            Question(questions[_questionIndex]),
-            Answer("Answer 1", answerQuestion),
-            Answer("Answer 2", answerQuestion),
-            Answer("Answer 3", answerQuestion),
-          ],
-        ),
+        body: _questionIndex < question.length
+            ? Quiz(
+                _answerQuestion,
+                question,
+                _questionIndex,
+              )
+            : Result(),
       ),
     );
   }
