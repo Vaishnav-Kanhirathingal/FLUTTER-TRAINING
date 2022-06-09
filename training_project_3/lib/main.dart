@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:training_project_3/RandomWords.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +14,9 @@ class MyApp extends StatelessWidget {
       title: 'Welcome to Flutter',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Welcome to Flutter'),
+          title: const Text("Name generator"),
         ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
+        body: const Center(child: RandomWords()),
       ),
     );
   }
