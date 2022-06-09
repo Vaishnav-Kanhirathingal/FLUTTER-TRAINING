@@ -12,20 +12,30 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
-  final questionText = "Question Text";
-  final answers = "answers";
+  var _totalScore = 0;
   final question = [
     {
       "Question Text": "what is your favourite color?",
-      "answers": ["red", "green", "blue", "yellow"]
+      "answers": [
+        {"text": "red", "score": 1},
+        {"text": "green", "score": 2},
+        {"text": "blue", "score": 3},
+        {"text": "yellow", "score": 4},
+      ]
     },
     {
       "Question Text": "what is your favourite animal?",
-      "answers": ["cat", "dog", "bird", "mouse"]
+      "answers": [
+        {"text": "cat", "score": 1},
+        {"text": "dog", "score": 2},
+        {"text": "bird", "score": 3},
+        {"text": "mouse", "score": 4},
+      ]
     }
   ];
 
-  void _answerQuestion() {
+  void _answerQuestion(int score) {
+    _totalScore += score;
     setState(() {
       _questionIndex++;
     });
@@ -34,6 +44,13 @@ class _MyAppState extends State<MyApp> {
     } else {
       print("Completed!!!");
     }
+  }
+
+  void resetQuiz() {
+    setState(() {
+      _totalScore = 0;
+      _questionIndex = 0;
+    });
   }
 
   @override
@@ -49,7 +66,7 @@ class _MyAppState extends State<MyApp> {
                 question,
                 _questionIndex,
               )
-            : Result(),
+            : Result(_totalScore,resetQuiz),
       ),
     );
   }
