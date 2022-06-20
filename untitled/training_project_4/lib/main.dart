@@ -29,7 +29,80 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void callBackFun(String text) {}
+  String currentNumber = "";
+  String action = "+";
+  double number = 0.0;
+  bool decimal = false;
+  var calculationActions = ["+", "-", "/", "X"];
+  var otherActions = ["AC", "C", "<", "=", "+/-"];
+
+  void callBackFun(String text) {
+    if (calculationActions.contains(text)) {
+      //do calculation
+      performAction(action);
+      decimal = false;
+      action = text;
+      currentNumber = "";
+    } else if (otherActions.contains(text)) {
+      switch (text) {
+        case "AC":
+          currentNumber = "";
+          action = "+";
+          number = 0.0;
+          decimal = false;
+          break;
+        case "C":
+          currentNumber = "";
+          decimal = false;
+          break;
+        case "<":
+          if (currentNumber.isNotEmpty) {
+            currentNumber =
+                currentNumber.substring(0, currentNumber.length - 1);
+          }
+          break;
+        case "=":
+          performAction(action);
+          currentNumber = number.toString();
+          action = "+";
+          number = 0.0;
+          decimal = false;
+          break;
+        case "+/-":
+          if (currentNumber.startsWith("-")) {
+            currentNumber = currentNumber.substring(1, currentNumber.length);
+          } else {
+            currentNumber = "-$currentNumber";
+          }
+          break;
+      }
+      //do calculation
+    } else if (text == "." && decimal == false) {
+      currentNumber += text;
+      decimal = true;
+    } else if (text != ".") {
+      currentNumber += text;
+    }
+    print(currentNumber);
+    setState(() {});
+  }
+
+  void performAction(String action) {
+    switch (action) {
+      case "+":
+        number += double.parse(currentNumber);
+        break;
+      case "-":
+        number -= double.parse(currentNumber);
+        break;
+      case "/":
+        number /= double.parse(currentNumber);
+        break;
+      case "X":
+        number *= double.parse(currentNumber);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,144 +110,193 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CalculatorButton(
-                  "7",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "4",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "1",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  ".",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CalculatorButton(
-                  "8",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "5",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "2",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "0",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CalculatorButton(
-                  "9",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "6",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "3",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "=",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CalculatorButton(
-                  "+",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "-",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "X",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-                CalculatorButton(
-                  "/",
-                  Colors.cyan,
-                  Colors.black,
-                  28,
-                  callBackFun,
-                ),
-              ],
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("S: $number", style: const TextStyle(fontSize: 36))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("A: $action", style: const TextStyle(fontSize: 36))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text("[$currentNumber]", style: const TextStyle(fontSize: 36))
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CalculatorButton(
+                text: "AC",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "C",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "<",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "/",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CalculatorButton(
+                text: "9",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "8",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "7",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "X",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CalculatorButton(
+                text: "6",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "5",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "4",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "-",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CalculatorButton(
+                text: "3",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "2",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "1",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "+",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CalculatorButton(
+                text: "+/-",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "0",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: ".",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+              CalculatorButton(
+                text: "=",
+                fillColor: Colors.cyan,
+                textColor: Colors.black,
+                textSize: 28,
+                callBack: callBackFun,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
